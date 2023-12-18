@@ -1,4 +1,3 @@
-#include <time.h>
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -8,23 +7,23 @@
 
 #include "wordhunt.h"
 
-int main(void) {
-/*
-    printf("Size of board?\n");
-    scanf("%d", &rows);
-    cols = rows;
-    */
-    TrieNode* root = initDict();
+int SIZEBOARD = 4;
 
-    Word foundWords[1250];
-    for (int i = 0; i < 1250; i++) {
-        foundWords[i].input[0] = '\0';
-    }
+int main(void) {
+
+//    printf("Size of board?\n");
+//    scanf("%d", &SIZEBOARD);
 
     Word word;
-    word.input[0] = '\0';
+    Word foundWords[2048];
+    TrieNode* root = initializeDictionary();
     int wordCounter = 0;
 
+    word.input[0] = '\0';
+    for (int i = 0; i < 1250; ++i) {
+        foundWords[i].input[0] = '\0';
+    }
+    
     Board board = getBoard();
 
     printBoard(board);
@@ -36,10 +35,9 @@ int main(void) {
     QueryPerformanceFrequency(&frequency);              /* get ticks per second */
     QueryPerformanceCounter(&t1);                       /* start timer */
 
-    for (int i = 0; i < SIZE; i++) {
-
-        for (int j = 0; j < SIZE; j++) {
-            wordFind(board, word, i, j, root, &wordCounter, foundWords);
+    for (int i = 0; i < SIZEBOARD; ++i) {
+        for (int j = 0; j < SIZEBOARD; ++j) {
+            findWords(board, word, i, j, root, &wordCounter, foundWords);
         }
     }
 
@@ -48,8 +46,7 @@ int main(void) {
     QueryPerformanceCounter(&t2);
     elapsedTime = (t2.QuadPart - t1.QuadPart) * 1000.0 / frequency.QuadPart;    /* compute elapsed time in milliseconds */
 
-    for (int i = 0; i < wordCounter; i++) {
-
+    for (int i = 0; i < wordCounter; ++i) {
         printf("%s\n", foundWords[i].input);
     }
 
@@ -57,8 +54,6 @@ int main(void) {
     
     printf("\nFound %d words\n", wordCounter);
     printf("%f ms elapsed time\n", elapsedTime);
-    
-    freeTrie(root);
 
     return 0;
 }
